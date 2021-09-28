@@ -304,11 +304,23 @@ def simulate_little_endian_linux(program: Program, argv: List[str]):
                 arg1 = stack.pop()
                 arg2 = stack.pop()
                 arg3 = stack.pop()
-                if syscall_number == 1:
+                if syscall_number == 0:
+                    fd = arg1
+                    buf = arg2
+                    count = arg3
+                    if fd == 0:
+                        arr = bytes(input()[:count]+'\n', 'utf-8')
+                    else:
+                        assert False, "Reading from fd %d not supported" % fd
+                    mem[buf:] = arr
+                    stack.append(len(arr))
+                elif syscall_number == 1:
                     fd = arg1
                     buf = arg2
                     count = arg3
                     s = mem[buf:buf+count].decode('utf-8')
+                    if fd == 0:
+                        print(s, end='', file=sys.stdin)
                     if fd == 1:
                         print(s, end='')
                     elif fd == 2:

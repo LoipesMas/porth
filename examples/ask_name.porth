@@ -1,0 +1,9 @@
+include "std.porth"
+
+"What's your name?\n" stdout write
+
+255 mem stdin read
+
+"Hello " stdout write
+swap
+mem stdout write
